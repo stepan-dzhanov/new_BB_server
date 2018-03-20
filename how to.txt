@@ -1,0 +1,24 @@
+
+-----------------------------How to enable mutex in Eclipse---------------------
+Make a new C++ project
+Default options for everything
+Once created, right-click the project and go to "Properties"
+C/C++ Build -> Settings -> Tool Settings -> GCC C++ Compiler -> Miscellaneous -> Other Flags. Put -std=c++0x (or for newer compiler version -std=c++11 at the end . ... instead of GCC C++ Compiler I have also Cygwin compiler
+C/C++ General -> Paths and Symbols -> Symbols -> GNU C++. Click "Add..." and paste __GXX_EXPERIMENTAL_CXX0X__ (ensure to append and prepend two underscores) into "Name" and leave "Value" blank.
+
+-----------------------------How to check how many treads in process------------
+
+cat /proc/<PID>/status | grep Threads
+
+
+-----------------------------how to copy files from host to target and run make in target-----------
+scp -r /home/stepan/new_server root@192.168.7.2:/home/stepan
+ssh root@192.168.7.2 cd /home/stepan/new_server \; make
+
+-----------------------------how to redirect out from console to file-------------------------------
+mycommand  > out.txt 2>&1
+
+----------------------------------how to list all quees----------------------------------------------
+
+ipcs -  will list all quee
+ipcrm msg <id-number> delete queue
