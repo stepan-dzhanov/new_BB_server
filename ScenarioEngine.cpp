@@ -7,6 +7,7 @@
 
 #include "ScenarioEngine.hpp"
 #include "Sensor.hpp"
+#include "ThingSpeakClient.h"
 
 ScenarioEngine::ScenarioEngine(key_t queue_key)	{
 
@@ -47,7 +48,7 @@ bool ScenarioEngine::check_scenario()	{
 
 	active_sensor_addr = event_str[3];
 
-	std::cout<<"Sensor`s data recived, address:"<<(active_sensor_addr)<<std::endl;
+	std::cout<<"Sensor`s data recived, address:"<<(active_sensor_addr+0x30)<<std::endl;
 
 	if(!memcmp(door_str,&event_str[5],4)) active_sensor_event = ALARM_EVENT;
     if(!memcmp(button_str,&event_str[5],6))	active_sensor_event = ALARM_EVENT;
@@ -58,17 +59,17 @@ bool ScenarioEngine::check_scenario()	{
 	std::cout<<"Pool size"<<sensor_pool.size()<<std::endl;
 
     for(unsigned int i=0; i<sensor_pool.size(); i++)	{
-    	std::cout<<"Checking sensor"<<sensor_pool[i].get_address()<<std::endl;
+    	std::cout<<"Checking sensor"<<sensor_pool[i].get_address()+0x30<<std::endl;
     	if(sensor_pool[i].settings.address == active_sensor_addr)	{
     	memcpy(sensor_pool[i].last_packet, event_str,QUEUES_MESSAGE_SIZE);// Copy data from gate to sensor object
-    		std::cout<<"Found a sensor in pool"<<std::endl;
-    		std::cout<<"Sensor battery:"<<event_str[5]<<std::endl;
+    		std::cout<<"Found a sensor in pool:"<<sensor_pool[i].settings.address+0x30<<std::endl;
+    		//std::cout<<"Sensor battery:"<<event_str[5]<<std::endl;
     		//if(active_sensor_event == BATTERY_MONITOR_EVENT)
     			if(sensor_pool[i].get_queue_size() == 0)	{         // if sensor`s queue is empty
     				rbuf.mtype = active_sensor_addr;
     			    buf_length = sizeof(message_buf_t) - sizeof(long);
     				sprintf(rbuf.mtext,"%ctst\n\r",active_sensor_addr);
-    				std::cout<<"Sending command to sensor:"<<active_sensor_addr<<std::endl;
+    				std::cout<<"Sending command to sensor:"<<active_sensor_addr+0x30<<std::endl;
     				if (msgsnd(msqid, &rbuf, buf_length, 0) < 0) {
     					perror("ScenarioEngine:can not sent message");
     				}
@@ -105,15 +106,19 @@ void ScenarioEngine::run_scenario()	{
 
 
 bool ScenarioEngine::scenario_temperature(Sensor* sens)	{
-	std::cout<<"Scenario TEMPERATURE run, sensor:"<<sens->settings.address<<std::endl;
+	std::cout<<"Scenario TEMPERATURE run, sensor:"<<sens->settings.address+0x30<<std::endl;
+	std::cout<<"Last string sensor:"<<sens->last_packet<<std::endl;
+	ThingSpeakClient *thingspeak_data = new ThingSpeakClient ;
+    thingspeak_data->PutDataToChannel(50,'5');
+    delete (thingspeak_data);
 	return true;
 }
 bool ScenarioEngine::scenario_battery(Sensor* sens)	{
-	std::cout<<"Scenario BATTERY run, sensor:"<<sens->settings.address<<std::endl;
+	std::cout<<"Scenario BATTERY run, sensor:"<<sens->settings.address+0x30<<std::endl;
 	return true;
 }
 bool ScenarioEngine::scenario_alarm(Sensor* sens)	{
-	std::cout<<"Scenario ALARM run, sensor:"<<sens->settings.address<<std::endl;
+	std::cout<<"Scenario ALARM run, sensor:"<<sens->settings.address+0x30<<std::endl;
 	return true;
 }
 

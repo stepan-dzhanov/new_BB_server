@@ -6,7 +6,7 @@
 CC=g++ -std=c++11
 CFLAGS=-c -Wall 
 LDFLAGS=-lpthread
-SOURCES=main.cpp ComPort.cpp NRF905Gate.cpp Sensor.cpp ScenarioEngine.cpp
+SOURCES=main.cpp ComPort.cpp NRF905Gate.cpp Sensor.cpp ScenarioEngine.cpp ThingSpeakClient.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=app
 

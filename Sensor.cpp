@@ -58,7 +58,7 @@ char Sensor::get_address()	{
 }
 
 void Sensor::reset_last_packet()	{
-	for(unsigned char i=0; i<SENSOR_PACKET_LENGTH; i++) last_packet[i]=0;
+	for(unsigned char i=0; i<(SENSOR_PACKET_LENGTH-1); i++) last_packet[i]=0;
 }
 
 

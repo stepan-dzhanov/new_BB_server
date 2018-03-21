@@ -46,7 +46,7 @@ private:
 
 
 public:
-	char last_packet[SENSOR_PACKET_LENGTH-1];
+	char last_packet[SENSOR_PACKET_LENGTH];
 	t_sensor_settings settings;
 	Sensor(t_sensor_settings sset);
 	bool push_command(t_sensor_command set_command);
