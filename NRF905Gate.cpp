@@ -54,7 +54,7 @@ bool NRF905Gate::GetEvent ()	{
 		if (i<=33) {
 			if (i==33){
 				sprintf(command,"%ctst\n\r",data_from_gate[3]);
-				AddSensorToLog(data_from_gate[3],data_from_gate[5]);// TBD full string from sensor
+				AddSensorToLog(data_from_gate[3],&data_from_gate[5]);// TBD full string from sensor
 				rbuf.mtype = MESSAGE_TYPE_EVENT;
 				memcpy(rbuf.mtext,data_from_gate, 32);
 				//cout<<rbuf.mtext<<'\n';
@@ -88,7 +88,7 @@ bool NRF905Gate::GetEvent ()	{
 
 }
 
-void NRF905Gate::AddSensorToLog(char _id, char _bat )	{
+void NRF905Gate::AddSensorToLog(char _id, char *str )	{
 
      char buff[64];
 	 long int s_time;
@@ -97,7 +97,7 @@ void NRF905Gate::AddSensorToLog(char _id, char _bat )	{
      localtime_r (&s_time, &m_time);
 
      str_counter++;
-     if (str_counter>1200){
+     if (str_counter>60000){
     	 str_counter=0;
     	 close(fid);
     	 fid = open("new_sensor_log.txt", O_RDWR | O_CREAT );
@@ -111,12 +111,11 @@ void NRF905Gate::AddSensorToLog(char _id, char _bat )	{
 
      sprintf(buff,"Sensor-");
      write(fid, buff, strlen(buff));
-     sprintf(buff,"%d",_id);
+     sprintf(buff,"%d-",_id);
      write(fid, buff, strlen(buff));
-     sprintf(buff,"Battery-");
-     write(fid, buff, strlen(buff));
-
-     write(fid, &_bat, 1);
+     
+     write(fid, str, (strlen(str)-1));
+     
      sprintf(buff," Time-");
      write(fid, buff, strlen(buff));
      sprintf(buff,"%d",(char)m_time.tm_mday);

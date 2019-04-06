@@ -63,7 +63,7 @@ private:
 	 int i;
 	 int fid;
 	 int str_counter;
-	 void AddSensorToLog(char _id, char _bat );
+	 void AddSensorToLog(char _id, char *str );
 	 char GetMessageLenght();
 
 	 char flg;

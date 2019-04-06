@@ -106,6 +106,7 @@ void ScenarioEngine::run_scenario()	{
 
 
 bool ScenarioEngine::scenario_temperature(Sensor* sens)	{
+	return true; 
 	std::cout<<"Scenario TEMPERATURE run, sensor:"<<sens->settings.address+0x30<<std::endl;
 	std::cout<<"Last string sensor:"<<sens->last_packet<<std::endl;
 	ThingSpeakClient *thingspeak_data = new ThingSpeakClient ;
