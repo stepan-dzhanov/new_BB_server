@@ -19,6 +19,13 @@
 #include <unistd.h>
 #include <mutex>
 
+#include <string> 
+#include <stdio.h>      /* printf */
+#include <assert.h> 
+#include <xmlrpc-c/base.hpp>
+#include <xmlrpc-c/client_simple.hpp>
+#include <iostream>
+
 #include "ComPort.hpp"
 #include "NRF905Gate.h"
 #include "protocol.h"
@@ -54,6 +61,23 @@ int main()
   message_buf_t  rbuf;
 
   pthread_t threads;
+  
+   std::string const serverUrl("http://174.138.14.251:8080/RPC2");
+    std::string const methodName("sample.add");
+
+    xmlrpc_c::clientSimple myClient;
+    xmlrpc_c::value result;
+        
+    //myClient.call(serverUrl, methodName, "ss", &result, "7", "door");
+
+    //std::string const sum((xmlrpc_c::value_string(result)));
+        // Assume the method returned an integer; throws error if not
+
+    //std::cout << "Result of RPC (sum of 5 and 7): " << sum << std::endl;
+  
+  
+  
+  
   int rc = pthread_create(&threads, NULL,RF_Service, 0);
     if (rc){
             std::cout << "Error:unable to create thread," << rc << std::endl;
