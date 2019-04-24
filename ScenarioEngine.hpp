@@ -63,7 +63,7 @@ private:
 	
 	
     xmlrpc_c::clientSimple myClient;
-    xmlrpc_c::value result;
+    
 
 
 

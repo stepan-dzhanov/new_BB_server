@@ -56,12 +56,19 @@ void ScenarioEngine::wait_event_form_gate()	{
 			active_sensor_event = BATTERY_MONITOR_EVENT;
 			active_sensor_message = "REGULAR";
 		}
-
-		std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
+		char str_sensor_addr[10];
+		char str_sensor_temperature[10];
+		char str_sensor_type[10];
+		char str_sensor_bat[10];
+		sprintf(str_sensor_addr,"%d",active_sensor_addr);
+		sprintf(str_sensor_temperature,"%d",21);
+		sprintf(str_sensor_type,"%d",active_sensor_type);
+		sprintf(str_sensor_bat,"OK");
 		
-		myClient.call("http://174.138.14.251:8080/RPC2", "add.sample", "sssss", &result, std::to_string(active_sensor_addr),\
-			active_sensor_message,std::to_string(active_sensor_type), \
-			std::to_string(active_sensor_temperature), std::to_string(active_sensor_batt));
+		
+		std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
+		xmlrpc_c::value result;
+		myClient.call("http://174.138.14.251:8080/RPC2", "sample.add", "sssss", &result, str_sensor_addr,active_sensor_message.c_str(),str_sensor_type, str_sensor_temperature, str_sensor_bat);
 		std::string const res((xmlrpc_c::value_string(result)));
 		std::cout<<"Server response:"<<res; 
 		
