@@ -22,8 +22,7 @@
 #include <string> 
 #include <stdio.h>      /* printf */
 #include <assert.h> 
-#include <xmlrpc-c/base.hpp>
-#include <xmlrpc-c/client_simple.hpp>
+
 #include <iostream>
 
 #include "ComPort.hpp"
@@ -62,18 +61,9 @@ int main()
 
   pthread_t threads;
   
-   std::string const serverUrl("http://174.138.14.251:8080/RPC2");
-    std::string const methodName("sample.add");
-
-    xmlrpc_c::clientSimple myClient;
-    xmlrpc_c::value result;
+    
         
-    //myClient.call(serverUrl, methodName, "ss", &result, "7", "door");
-
-    //std::string const sum((xmlrpc_c::value_string(result)));
-        // Assume the method returned an integer; throws error if not
-
-    //std::cout << "Result of RPC (sum of 5 and 7): " << sum << std::endl;
+    
   
   
   

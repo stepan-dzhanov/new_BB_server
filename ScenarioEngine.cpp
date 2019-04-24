@@ -27,11 +27,44 @@ bool ScenarioEngine::attach_sensor(Sensor* sns)	{
 }
 
 void ScenarioEngine::wait_event_form_gate()	{
+	const char *door_str = "door";
+	const char *bt_str = "bt";
+	const char *button_str = "button";
+	active_sensor_addr = 0;
+	active_sensor_event =0;
+	std::string active_sensor_message;
+	
 
 	if(msgrcv(msqid, &rbuf, QUEUES_MESSAGE_SIZE, MESSAGE_TYPE_EVENT,0)>0){
 		memcpy(event_str,rbuf.mtext,QUEUES_MESSAGE_SIZE);
 
 		std::cout<<"Data form sensor:"<<event_str<<std::endl;
+		active_sensor_addr = event_str[3];
+		active_sensor_type = event_str[4];
+		active_sensor_temperature = 21; //TBD catch temperature from sensor
+		active_sensor_batt = 1;
+	
+		if(!memcmp(door_str,&event_str[5],4)) {
+			active_sensor_event = ALARM_EVENT;
+			active_sensor_message = "DOOR";
+		}
+		if(!memcmp(button_str,&event_str[5],6))	{
+			active_sensor_event = ALARM_EVENT;
+			active_sensor_message = "BUTTON";
+		}
+		if(!memcmp(bt_str,&event_str[6],2)){
+			active_sensor_event = BATTERY_MONITOR_EVENT;
+			active_sensor_message = "REGULAR";
+		}
+
+		std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
+		
+		myClient.call("http://174.138.14.251:8080/RPC2", "add.sample", "sssss", &result, std::to_string(active_sensor_addr),\
+			active_sensor_message,std::to_string(active_sensor_type), \
+			std::to_string(active_sensor_temperature), std::to_string(active_sensor_batt));
+		std::string const res((xmlrpc_c::value_string(result)));
+		std::cout<<"Server response:"<<res; 
+		
 
 	}
 
@@ -40,21 +73,7 @@ void ScenarioEngine::wait_event_form_gate()	{
 bool ScenarioEngine::check_scenario()	{
 	t_sensor_command command_from_fifo;
 	int buf_length;
-	const char *door_str = "door";
-	const char *bt_str = "bt";
-	const char *button_str = "button";
-	active_sensor_addr = 0;
-	active_sensor_event =0;
-
-	active_sensor_addr = event_str[3];
-
-	std::cout<<"Sensor`s data recived, address:"<<(active_sensor_addr+0x30)<<std::endl;
-
-	if(!memcmp(door_str,&event_str[5],4)) active_sensor_event = ALARM_EVENT;
-    if(!memcmp(button_str,&event_str[5],6))	active_sensor_event = ALARM_EVENT;
-    if(!memcmp(bt_str,&event_str[6],2))active_sensor_event = BATTERY_MONITOR_EVENT;
-
-	std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
+	
 
 	std::cout<<"Pool size"<<sensor_pool.size()<<std::endl;
 

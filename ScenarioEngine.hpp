@@ -25,6 +25,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <xmlrpc-c/base.hpp>
+#include <xmlrpc-c/client_simple.hpp>
+
 #include "Sensor.hpp"
 #include "protocol.h"
 
@@ -50,11 +53,17 @@ private:
 	int msqid;
 	char active_sensor_addr;
 	char active_sensor_event;
+	char active_sensor_type;
+	char active_sensor_temperature;
+	char active_sensor_batt;
 
 	bool scenario_temperature(Sensor* sens);
 	bool scenario_battery(Sensor* sens);
 	bool scenario_alarm(Sensor* sens);
-
+	
+	
+    xmlrpc_c::clientSimple myClient;
+    xmlrpc_c::value result;
 
 
 
