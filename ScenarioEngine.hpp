@@ -62,7 +62,7 @@ private:
 	bool scenario_alarm(Sensor* sens);
 	
 	
-    xmlrpc_c::clientSimple myClient;
+    
     
 
 

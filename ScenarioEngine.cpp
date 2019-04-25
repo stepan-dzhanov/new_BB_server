@@ -9,6 +9,11 @@
 #include "Sensor.hpp"
 #include "ThingSpeakClient.h"
 
+#include <cstdlib>
+#include <string>
+#include <iostream>
+
+
 ScenarioEngine::ScenarioEngine(key_t queue_key)	{
 
 	if ((msqid = msgget(queue_key, O_RDWR | IPC_CREAT )) < 0) {
@@ -67,10 +72,23 @@ void ScenarioEngine::wait_event_form_gate()	{
 		
 		
 		std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
-		xmlrpc_c::value result;
-		myClient.call("http://174.138.14.251:8080/RPC2", "sample.add", "sssss", &result, str_sensor_addr,active_sensor_message.c_str(),str_sensor_type, str_sensor_temperature, str_sensor_bat);
-		std::string const res((xmlrpc_c::value_string(result)));
-		std::cout<<"Server response:"<<res; 
+		try
+		{
+			xmlrpc_c::clientSimple myClient;
+			xmlrpc_c::value result;
+			myClient.call("http://174.138.14.251:8080/RPC2", "sample.add", "sssss", &result, str_sensor_addr,active_sensor_message.c_str(),str_sensor_type, str_sensor_temperature, str_sensor_bat);
+			std::string const res((xmlrpc_c::value_string(result)));
+			std::cout<<"Server response:"<<res;
+		}
+		catch (std::exception const& e)
+		{
+			std::cerr << "Client threw error: " << e.what() << std::endl;
+		}
+	    catch (...) 
+		{
+			std::cerr << "Client threw unexpected error." << std::endl;
+		}
+		
 		
 
 	}
