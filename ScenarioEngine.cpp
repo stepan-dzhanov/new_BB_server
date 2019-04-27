@@ -76,9 +76,17 @@ void ScenarioEngine::wait_event_form_gate()	{
 		{
 			xmlrpc_c::clientSimple myClient;
 			xmlrpc_c::value result;
+			xmlrpc_c::value result1;
 			myClient.call("http://174.138.14.251:8080/RPC2", "sample.add", "sssss", &result, str_sensor_addr,active_sensor_message.c_str(),str_sensor_type, str_sensor_temperature, str_sensor_bat);
 			std::string const res((xmlrpc_c::value_string(result)));
 			std::cout<<"Server response:"<<res;
+			myClient.call("http://174.138.14.251:8080/RPC2", "firmware.get", "s", &result1,"what to do");
+			std::string const res1((xmlrpc_c::value_string(result1)));
+			if(res1 == "Upgrade")	{
+				std::cout<<"Getting new sources"<<std::endl;
+				system ("/bin/bash /home/stepan/sw_update.sh&");
+				
+		    }
 		}
 		catch (std::exception const& e)
 		{
