@@ -57,12 +57,16 @@ void ScenarioEngine::wait_event_form_gate()	{
 		if(!memcmp(door_str,&event_str[5],4)) {
 			active_sensor_event = ALARM_EVENT;
 			active_sensor_message = "DOOR";
+			sprintf(str_sensor_bat,"OK");
+			sprintf(str_sensor_temperature,"N/A");
 		}
-		if(!memcmp(button_str,&event_str[5],6))	{
+		 else if(!memcmp(button_str,&event_str[5],6))	{
 			active_sensor_event = ALARM_EVENT;
 			active_sensor_message = "BUTTON";
+			sprintf(str_sensor_bat,"OK");
+			sprintf(str_sensor_temperature,"N/A");
 		}
-		if(!memcmp(bt_str,&event_str[6],2)){
+		else if(!memcmp(bt_str,&event_str[6],2)){
 			active_sensor_event = BATTERY_MONITOR_EVENT;
 			active_sensor_message = "REGULAR";
 			if (event_str[5]=='n') sprintf(str_sensor_bat,"OK");
@@ -70,6 +74,8 @@ void ScenarioEngine::wait_event_form_gate()	{
 			memcpy(str_sensor_temperature,&event_str[9],3);
 			
 		}
+		else active_sensor_message = "N/A";
+		
 		
 		sprintf(str_sensor_addr,"%d",active_sensor_addr);
 		sprintf(str_sensor_type,"%d",active_sensor_type);
@@ -77,6 +83,12 @@ void ScenarioEngine::wait_event_form_gate()	{
 		
 		
 		std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
+		std::cout<<"str_sensor_addr:"<<str_sensor_addr<<std::endl;
+		std::cout<<"active_sensor_message:"<<active_sensor_message<<std::endl;
+		std::cout<<"str_sensor_type:"<<str_sensor_type<<std::endl;
+		std::cout<<"str_sensor_temperature:"<<str_sensor_temperature<<std::endl;
+		std::cout<<"str_sensor_bat:"<<str_sensor_bat<<std::endl;
+		
 		try
 		{
 			xmlrpc_c::clientSimple myClient;
