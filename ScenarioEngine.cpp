@@ -39,6 +39,11 @@ void ScenarioEngine::wait_event_form_gate()	{
 	active_sensor_event =0;
 	std::string active_sensor_message;
 	
+	char str_sensor_addr[10];
+	char str_sensor_temperature[10];
+	char str_sensor_type[10];
+	char str_sensor_bat[10];
+	
 
 	if(msgrcv(msqid, &rbuf, QUEUES_MESSAGE_SIZE, MESSAGE_TYPE_EVENT,0)>0){
 		memcpy(event_str,rbuf.mtext,QUEUES_MESSAGE_SIZE);
@@ -60,15 +65,15 @@ void ScenarioEngine::wait_event_form_gate()	{
 		if(!memcmp(bt_str,&event_str[6],2)){
 			active_sensor_event = BATTERY_MONITOR_EVENT;
 			active_sensor_message = "REGULAR";
+			if (event_str[5]=='n') sprintf(str_sensor_bat,"OK");
+			else sprintf(str_sensor_bat,"Low");
+			memcpy(str_sensor_temperature,&event_str[9],3);
+			
 		}
-		char str_sensor_addr[10];
-		char str_sensor_temperature[10];
-		char str_sensor_type[10];
-		char str_sensor_bat[10];
+		
 		sprintf(str_sensor_addr,"%d",active_sensor_addr);
-		sprintf(str_sensor_temperature,"%d",21);
 		sprintf(str_sensor_type,"%d",active_sensor_type);
-		sprintf(str_sensor_bat,"OK");
+		
 		
 		
 		std::cout<<"Sensor event:"<<active_sensor_event<<std::endl;
