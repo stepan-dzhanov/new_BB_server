@@ -43,6 +43,7 @@ void ScenarioEngine::wait_event_form_gate()	{
 	char str_sensor_temperature[10];
 	char str_sensor_type[10];
 	char str_sensor_bat[10];
+	char str_sensor_message[16];
 	
 
 	if(msgrcv(msqid, &rbuf, QUEUES_MESSAGE_SIZE, MESSAGE_TYPE_EVENT,0)>0){
@@ -79,6 +80,7 @@ void ScenarioEngine::wait_event_form_gate()	{
 		
 		sprintf(str_sensor_addr,"%d",active_sensor_addr);
 		sprintf(str_sensor_type,"%d",active_sensor_type);
+		strcpy(str_sensor_message,active_sensor_message.c_str());
 		
 		
 		
@@ -93,7 +95,13 @@ void ScenarioEngine::wait_event_form_gate()	{
 		{
 			xmlrpc_c::clientSimple myClient;
 			xmlrpc_c::value result;
+			xmlrpc_c::value result0;
 			xmlrpc_c::value result1;
+			if((active_sensor_message == "DOOR")||(active_sensor_message == "BUTTON"))	{
+				myClient.call("http://174.138.14.251:8080/RPC2", "message.add", "s", &result0,str_sensor_message);
+				std::string const res0((xmlrpc_c::value_string(result0)));
+				
+		    }
 			myClient.call("http://174.138.14.251:8080/RPC2", "sample.add", "sssss", &result, str_sensor_addr,active_sensor_message.c_str(),str_sensor_type, str_sensor_temperature, str_sensor_bat);
 			std::string const res((xmlrpc_c::value_string(result)));
 			std::cout<<"Server response:"<<res;
